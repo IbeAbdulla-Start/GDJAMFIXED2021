@@ -17,6 +17,7 @@ public class CollectionScript : MonoBehaviour
 
     private bool canpickup = false;
     private bool hasitem = false;
+    private bool enemyCollide = false;
 
     private Vector3 handsOffset;
 
@@ -32,7 +33,7 @@ public class CollectionScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
         movementUpdate();
         Collect();
     }
@@ -46,16 +47,16 @@ public class CollectionScript : MonoBehaviour
         horizontal = 0;
         forward = 0;
         vertical = 0;
-        
+
         if (Input.GetKeyDown(KeyCode.A) || Input.GetKey(KeyCode.A))
         {
-            horizontal -= Time.deltaTime*moveSpeed;
-            
+            horizontal -= Time.deltaTime * moveSpeed;
+
         }
         if (Input.GetKeyDown(KeyCode.D) || Input.GetKey(KeyCode.D))
         {
             horizontal += Time.deltaTime * moveSpeed;
-            
+
         }
         if (Input.GetKeyDown(KeyCode.W) || Input.GetKey(KeyCode.W))
         {
@@ -67,7 +68,7 @@ public class CollectionScript : MonoBehaviour
         }
         if (!hasitem)
         {
-            
+
             transform.LookAt(target.transform, Vector3.up);
         }
         else
@@ -97,10 +98,10 @@ public class CollectionScript : MonoBehaviour
                 target.transform.parent = transform;
                 hasitem = true;
             }
-            
-            
+
+
         }
-        if (hasitem)
+        if (hasitem && !enemyCollide)
         {
             target.GetComponent<Rigidbody>().isKinematic = true;
             target.transform.position = transform.position + handsOffset;
@@ -124,13 +125,15 @@ public class CollectionScript : MonoBehaviour
         if (collision.transform.CompareTag("Enemy"))
         {
             collision.transform.GetComponent<AIBehaviour>().setItem(false);
+            enemyCollide = true;
         }
 
     }
     public void OnCollisionExit(Collision collision)
     {
         canpickup = false;
+        enemyCollide = false;
     }
 
-    
+
 }
